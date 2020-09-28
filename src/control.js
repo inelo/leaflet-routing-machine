@@ -219,9 +219,26 @@
 		},
 
 		_hookEvents: function(l) {
+			this._pendingWaypoints = [];
+
 			l.on('linetouched', function(e) {
+				const wpClosestRouteIndex = this._line._findClosestRoutePoint(e.latlng),
+            pendingWpWithSameIndex = this.pendingWaypoints.find(({ afterIndex }) => afterIndex === e.afterIndex);
+        let newWpIndex;
+
+				if (pendingWpWithSameIndex) {
+					const prevClosestRouteIndexes = this.pendingWaypoints.filter(({ closestPointIndex }) => 
+						closestPointIndex < wpClosestRouteIndex
+					);
+					newWpIndex = prevClosestRouteIndexes.length + e.afterIndex;
+				} else {
+					newWpIndex = e.afterIndex;
+				}
+
+				this.pendingWaypoints.push({ afterIndex: newWpIndex, closestPointIndex: wpClosestRouteIndex });
+
 				if (e.afterIndex < this.getWaypoints().length - 1) {
-					this._plan.dragNewWaypoint(e);
+					this._plan.dragNewWaypoint(L.extend(e, { afterIndex: newWpIndex }));
 				}
 			}, this);
 		},
