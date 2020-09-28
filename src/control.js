@@ -223,7 +223,7 @@
 
 			l.on('linetouched', function(e) {
 				const wpClosestRouteIndex = this._line._findClosestRoutePoint(e.latlng),
-						pendingWpWithSameIndex = this.pendingWaypoints.find(({ afterIndex }) => afterIndex === e.afterIndex);
+					pendingWpWithSameIndex = this.pendingWaypoints.find(({ afterIndex }) => afterIndex === e.afterIndex);
 				let newWpIndex;
 
 				if (pendingWpWithSameIndex) {
